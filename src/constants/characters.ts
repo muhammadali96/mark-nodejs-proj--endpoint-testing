@@ -12,3 +12,8 @@ export const MYSTERIOUS_ROBED_FIGURE: Character = {
   name: "???",
   description: "A mysterious, robed figure",
 };
+
+export const ALEDS_IPAD: Character = {
+  name: "Aled and friends",
+  description: "Chaotic evil"
+}

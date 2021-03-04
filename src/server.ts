@@ -2,8 +2,9 @@ import express from "express";
 import {
   ADVENTURE_ADMIN,
   MYSTERIOUS_ROBED_FIGURE,
+  ALEDS_IPAD,
 } from "./constants/characters";
-import { CAVE_EXTERIOR, HANDFORTH_PARISH_COUNCIL } from "./constants/locations";
+import { CAVE_EXTERIOR, HANDFORTH_PARISH_COUNCIL, JACKIE_WEAVERS_HIDEOUT } from "./constants/locations";
 
 const app = express();
 
@@ -68,5 +69,36 @@ app.get("/quest/decline", (req, res) => {
     },
   });
 });
+app.get("/quest/start/impossible", (req, res) => {
+  res.json({
+    location: "",
+    speech: {
+      speaker: {
+        name: ""
+      },
+      text: "excruciating death from dragon fireball"
+    },
+    options: {
+      restart: "/",
+    },
+  })
+})
+app.get("/quest/start/easy", (req, res) => {
+  res.json({
+    location: JACKIE_WEAVERS_HIDEOUT,
+    speech: {
+      speaker: {
+        name: ALEDS_IPAD
+      },
+      text: "Do you want to wait for Jackie to find her authority or be disruptive?"
+    },
+    options: {
+      restart: "/",
+      wait: "/quest/start/easy/progress",
+      disrupt: "quest/start/impossible"
+
+    },
+  })
+})
 
 export default app;

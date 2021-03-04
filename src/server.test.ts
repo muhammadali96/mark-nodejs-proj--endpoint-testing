@@ -1,7 +1,8 @@
 import supertest from "supertest";
 import app from "./server";
-import { MYSTERIOUS_ROBED_FIGURE } from "./constants/characters";
-import { CAVE_EXTERIOR } from "./constants/locations";
+import { MYSTERIOUS_ROBED_FIGURE, ADVENTURE_ADMIN, ALEDS_IPAD } from "./constants/characters";
+import { CAVE_EXTERIOR, HANDFORTH_PARISH_COUNCIL, JACKIE_WEAVERS_HIDEOUT } from "./constants/locations";
+
 
 test("GET / responds with a welcome message from our mysterious robed figure", async () => {
   const response = await supertest(app).get("/");
@@ -56,7 +57,7 @@ test("GET /quest/decline responds with an apocalyptic message", async () => {
   expect(response.body.options).toStrictEqual({ restart: "/" });
 });
 
-test.skip("GET /quest/start/impossible responds with instant 'death'", async () => {
+test("GET /quest/start/impossible responds with instant 'death'", async () => {
   const response = await supertest(app).get("/quest/start/impossible");
 
   // there is _some_ location
@@ -73,3 +74,33 @@ test.skip("GET /quest/start/impossible responds with instant 'death'", async () 
   // includes option to restart
   expect(response.body.options).toMatchObject({ restart: "/" });
 });
+
+test("GET /quest/start/easy responds with instant 'death'", async () => {
+  const response = await supertest(app).get("/quest/start/easy");
+
+  // there is _some_ location
+  expect(response.body.location).toStrictEqual(JACKIE_WEAVERS_HIDEOUT);
+
+  // there is _some_ speaker
+  expect(response.body.speech.speaker.name).toStrictEqual(ALEDS_IPAD);
+
+  // fiery death
+  expect(response.body.speech.text).toMatch(/Jackie/i);
+  expect(response.body.speech.text).toMatch(/find her authority/i);
+
+  // includes option to restart
+  expect(response.body.options).toMatchObject({ restart: "/" });
+});
+
+test("GET /quest/help/ responds with information about game", async () => {
+  const response = await supertest(app).get("/help");
+
+  //there is some location
+  expect(response.body.location).toStrictEqual(HANDFORTH_PARISH_COUNCIL)
+  //there is some speech:speaker,text
+  expect(response.body.speech.speaker).toStrictEqual(ADVENTURE_ADMIN)
+  expect(response.body.speech.text).toMatch(/choose your own adventure/i)
+  //there is options;backToStart
+  expect(response.body.options).toMatchObject({ backToStart: "/" })
+
+})
